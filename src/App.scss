@@ -41,366 +41,61 @@ body {
 }
 
 // Global styles for NASA app
+/* App.scss */
 .nasa-app {
-  min-height: 100vh;
-  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
 
-  /* Header */
-  .app-header {
-    background: linear-gradient(135deg, #1e293b, #334155);
-    color: white;
-    padding: 1.5rem 0;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+.app-header {
+  text-align: center;
+  background: linear-gradient(135deg, #0c1445 0%, #1a237e 50%, #0d47a1 100%);
+  color: white;
+  padding: 40px;
+  border-radius: 20px;
+  margin-bottom: 30px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  position: relative;
+  overflow: hidden;
+}
 
-    .header-content {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 1rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+.app-header::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="40" r="0.5" fill="rgba(255,255,255,0.1)"/><circle cx="40" cy="80" r="1.5" fill="rgba(255,255,255,0.1)"/><circle cx="90" cy="90" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="10" cy="60" r="0.8" fill="rgba(255,255,255,0.1)"/></svg>')
+    repeat;
+  animation: stars 20s linear infinite;
+}
 
-      @media (max-width: 768px) {
-        flex-direction: column;
-        gap: 1rem;
-        text-align: center;
-      }
-    }
+.app-header h1 {
+  margin: 0 0 10px 0;
+  font-size: 2.5em;
+  font-weight: 700;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  position: relative;
+  z-index: 1;
+}
 
-    .logo-section {
-      h1 {
-        margin: 0 0 0.5rem 0;
-        font-size: 2rem;
-        font-weight: 700;
-        background: linear-gradient(135deg, #60a5fa, #34d399);
-        -webkit-background-clip: text;
-        background-clip: text;
-        -webkit-text-fill-color: transparent;
+.app-header p {
+  margin: 0;
+  font-size: 1.2em;
+  opacity: 0.9;
+  position: relative;
+  z-index: 1;
+}
 
-        @media (max-width: 768px) {
-          font-size: 1.5rem;
-        }
-      }
-
-      p {
-        margin: 0;
-        color: #cbd5e1;
-        font-size: 1rem;
-        opacity: 0.9;
-      }
-    }
-
-    .stats-section {
-      display: flex;
-      gap: 2rem;
-
-      @media (max-width: 640px) {
-        gap: 1rem;
-      }
-
-      .stat {
-        text-align: center;
-
-        .stat-value {
-          display: block;
-          font-size: 2rem;
-          font-weight: 700;
-          color: #60a5fa;
-          line-height: 1;
-
-          @media (max-width: 640px) {
-            font-size: 1.5rem;
-          }
-        }
-
-        .stat-label {
-          display: block;
-          font-size: 0.85rem;
-          color: #cbd5e1;
-          margin-top: 0.25rem;
-          opacity: 0.8;
-        }
-      }
-    }
+@keyframes stars {
+  0% {
+    transform: translateX(0);
   }
-
-  /* Error Banner */
-  .error-banner {
-    background: #fef2f2;
-    border-bottom: 1px solid #fecaca;
-    padding: 1rem 0;
-
-    .error-content {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 1rem;
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-
-      .error-icon {
-        font-size: 1.2rem;
-        flex-shrink: 0;
-      }
-
-      .error-message {
-        flex: 1;
-        color: #dc2626;
-        font-weight: 500;
-      }
-
-      .error-close {
-        background: none;
-        border: none;
-        color: #dc2626;
-        font-size: 1.2rem;
-        cursor: pointer;
-        padding: 0.25rem 0.5rem;
-        border-radius: 4px;
-        transition: background-color 0.2s ease;
-
-        &:hover {
-          background: #fee2e2;
-        }
-      }
-    }
-  }
-
-  /* Main Content */
-  .app-main {
-    padding: 2rem 0;
-
-    .main-content {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 1rem;
-      display: flex;
-      flex-direction: column;
-      gap: 2rem;
-    }
-  }
-
-  /* Dashboard Section */
-  .dashboard-section {
-    .dashboard-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1.5rem;
-
-      h2 {
-        margin: 0;
-        color: #1f2937;
-        font-size: 1.5rem;
-        font-weight: 600;
-      }
-
-      .clear-button {
-        background: #f3f4f6;
-        border: 1px solid #d1d5db;
-        padding: 0.5rem 1rem;
-        border-radius: 8px;
-        color: #374151;
-        font-weight: 500;
-        cursor: pointer;
-        transition: all 0.2s ease;
-
-        &:hover {
-          background: #e5e7eb;
-          transform: translateY(-1px);
-        }
-      }
-    }
-
-    /* Quick Stats */
-    .quick-stats {
-      margin-bottom: 2rem;
-
-      .stat-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 1rem;
-
-        .stat-card {
-          background: white;
-          border: 1px solid #e5e7eb;
-          border-radius: 12px;
-          padding: 1.5rem;
-          text-align: center;
-          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-          transition: transform 0.2s ease, box-shadow 0.2s ease;
-
-          &:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-          }
-
-          h3 {
-            margin: 0 0 1rem 0;
-            color: #6b7280;
-            font-size: 0.9rem;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-          }
-
-          .stat-value {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: #1f2937;
-            line-height: 1;
-          }
-        }
-      }
-    }
-
-    /* Analysis History Dashboard */
-    .analysis-history-dashboard {
-      background: white;
-      border: 1px solid #e5e7eb;
-      border-radius: 12px;
-      padding: 1.5rem;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-
-      h3 {
-        margin: 0 0 1rem 0;
-        color: #1f2937;
-        font-size: 1.2rem;
-        font-weight: 600;
-      }
-
-      .history-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 1rem;
-
-        @media (max-width: 640px) {
-          grid-template-columns: 1fr;
-        }
-
-        .history-card {
-          border: 1px solid #e5e7eb;
-          border-radius: 8px;
-          padding: 1rem;
-          cursor: pointer;
-          transition: all 0.2s ease;
-          background: #fafafa;
-
-          &:hover {
-            border-color: #3b82f6;
-            background: #f8fafc;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-          }
-
-          &.active {
-            border-color: #3b82f6;
-            background: #eff6ff;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-          }
-
-          .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 0.75rem;
-
-            .relevance-badge {
-              background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-              color: white;
-              padding: 0.25rem 0.75rem;
-              border-radius: 12px;
-              font-size: 0.8rem;
-              font-weight: 600;
-            }
-
-            .timestamp {
-              font-size: 0.8rem;
-              color: #6b7280;
-            }
-          }
-
-          .card-content {
-            .organisms {
-              display: flex;
-              flex-wrap: wrap;
-              gap: 0.25rem;
-              margin-bottom: 0.5rem;
-
-              .organism-tag {
-                background: #fef3c7;
-                color: #92400e;
-                padding: 0.15rem 0.4rem;
-                border-radius: 8px;
-                font-size: 0.7rem;
-                font-weight: 500;
-              }
-
-              .more-tag {
-                background: #e5e7eb;
-                color: #6b7280;
-                padding: 0.15rem 0.4rem;
-                border-radius: 8px;
-                font-size: 0.7rem;
-                font-weight: 500;
-              }
-            }
-
-            .findings-count {
-              font-size: 0.8rem;
-              color: #6b7280;
-              font-style: italic;
-            }
-          }
-        }
-      }
-    }
-  }
-
-  /* Footer */
-  .app-footer {
-    background: #1f2937;
-    color: #d1d5db;
-    padding: 2rem 0;
-    margin-top: 4rem;
-
-    .footer-content {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 1rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-
-      @media (max-width: 768px) {
-        flex-direction: column;
-        gap: 1rem;
-        text-align: center;
-      }
-
-      p {
-        margin: 0;
-        font-size: 0.9rem;
-        opacity: 0.8;
-      }
-
-      .footer-links {
-        display: flex;
-        gap: 1.5rem;
-
-        a {
-          color: #9ca3af;
-          text-decoration: none;
-          font-size: 0.9rem;
-          transition: color 0.2s ease;
-
-          &:hover {
-            color: #60a5fa;
-          }
-        }
-      }
-    }
+  100% {
+    transform: translateX(20px);
   }
 }
 

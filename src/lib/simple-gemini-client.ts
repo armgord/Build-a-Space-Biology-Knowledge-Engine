@@ -124,7 +124,7 @@ export class SimpleGeminiHTTPClient implements SimpleGeminiClient {
       const filteredPapers = SmartPaperFilter.filterRelevantPapers(
         papers,
         userQuery,
-        5 // AJUSTADO: Máximo 5 papers para Gemini Free Tier
+        10 // AUMENTADO: Máximo 10 papers para Gemini 2.0 Flash Experimental
       );
       console.log(`✅ Papers filtrados: ${filteredPapers.length}`);
 
@@ -151,11 +151,15 @@ export class SimpleGeminiHTTPClient implements SimpleGeminiClient {
 
         INSTRUCCIONES PASO A PASO:
         
-        PASO 1: SELECCIÓN DE PAPERS RELEVANTES
-        - Analiza título, keywords, autores y abstract de cada paper
-        - Encuentra conexiones semánticas con la consulta del usuario
-        - Selecciona los 3-5 papers MÁS relevantes
-        - Explica brevemente por qué cada paper es relevante
+        PASO 1: ANÁLISIS DE TODOS LOS PAPERS PRE-FILTRADOS
+        - Estos ${
+          filteredPapers.length
+        } papers ya fueron seleccionados por relevancia usando algoritmo inteligente
+        - ANALIZA TODOS Y CADA UNO de estos ${
+          filteredPapers.length
+        } papers filtrados
+        - NO descartes ninguno - todos son relevantes según el filtro previo
+        - Explica por qué cada paper contribuye a responder la consulta
         
         PASO 2: ANÁLISIS PROFUNDO DE CONTENIDO
         - Accede al contenido completo de las URLs de los papers seleccionados
@@ -170,9 +174,14 @@ export class SimpleGeminiHTTPClient implements SimpleGeminiClient {
         - Deriva insights y recomendaciones basadas en evidencia
         
         PASO 4: REPORTE ESTRUCTURADO
+        IMPORTANTE: Debes incluir TODOS los ${
+          filteredPapers.length
+        } papers pre-filtrados en tu respuesta.
         Responde ÚNICAMENTE en JSON con este formato exacto:
         {
-          "searchSummary": "explicación de por qué estos papers son los más relevantes para la consulta",
+          "searchSummary": "explicación del proceso de filtrado desde 607 papers hasta estos ${
+            filteredPapers.length
+          } más relevantes",
           "relevantPapers": [
             {
               "title": "título exacto del paper",
@@ -191,7 +200,6 @@ export class SimpleGeminiHTTPClient implements SimpleGeminiClient {
           "keyInsights": ["insight científico importante 1", "insight científico importante 2", "insight científico importante 3"],
           "recommendations": ["recomendación práctica 1", "recomendación para futuras investigaciones 2"],
           "confidence": 8.5,
-          "totalPapersAnalyzed": número,
           "sources": ["URL1", "URL2", "URL3"]
         }
       `;
@@ -205,12 +213,12 @@ export class SimpleGeminiHTTPClient implements SimpleGeminiClient {
         `🌐 URLs a analizar: ${filteredUrls.length} (vs ${papers.length} originales)`
       );
 
-      // VALIDACIÓN: Asegurar límite de URLs para Free Tier
-      if (filteredUrls.length > 5) {
+      // VALIDACIÓN: Asegurar límite de URLs para Gemini 2.0 Flash Experimental
+      if (filteredUrls.length > 10) {
         console.warn(
-          `⚠️ Limitando URLs de ${filteredUrls.length} a 5 para Free Tier`
+          `⚠️ Limitando URLs de ${filteredUrls.length} a 10 para Gemini Experimental`
         );
-        filteredUrls.splice(5); // Mantener solo los primeros 5
+        filteredUrls.splice(10); // Mantener solo los primeros 10
       }
 
       return await this.queryWithURLContext(filteredUrls, comprehensivePrompt);
@@ -255,7 +263,7 @@ export class SimpleGeminiHTTPClient implements SimpleGeminiClient {
             ],
             generationConfig: {
               temperature: 0.1,
-              maxOutputTokens: 4096, // Más tokens para análisis completo
+              maxOutputTokens: 8192, // AUMENTADO: Más tokens para análisis profundo
               responseMimeType: "application/json",
             },
           }),

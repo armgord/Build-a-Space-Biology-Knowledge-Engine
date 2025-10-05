@@ -20,11 +20,62 @@ SimpleResearchTool.tsx:46 🚀 Iniciando investigación completa para: ¿Cuáles
 simple-gemini-client.ts:117 🔬 Iniciando investigación completa automatizada...
 simple-gemini-client.ts:123 📊 Papers totales: 607
 smart-filter.ts:23 🔍 Filtrando 607 papers para: "¿Cuáles son los principales efectos cardiovasculares del vuelo espacial y las contramedidas desarrolladas?"
-smart-filter.ts:42 ✅ Filtrados: 5 papers más relevantes
-smart-filter.ts:43 📊 Scores: 1.26, 1.26, 1.19, 1.19, 1.06
+smart-filter.ts:135 💗 CARDIOVASCULAR BOOST: "Stem Cell Health and Tissue Regeneration in Microgravity"
+smart-filter.ts:135 💗 CARDIOVASCULAR BOOST: "Spaceflight Modulates the Expression of Key Oxidative Stress and Cell Cycle Related Genes in Heart"
+smart-filter.ts:42 🩺 CARDIOVASCULAR PAPER: "Spaceflight Modulates the Expression of Key Oxidative Stress and Cell Cycle Related Genes in Heart" - Score: 3.89
+smart-filter.ts:135 💗 CARDIOVASCULAR BOOST: "GeneLab database analyses suggest long-term impact of space radiation on the cardiovascular system by the activation of FYN through reactive oxygen species."
+smart-filter.ts:42 🩺 CARDIOVASCULAR PAPER: "GeneLab database analyses suggest long-term impact of space radiation on the cardiovascular system by the activation of FYN through reactive oxygen species." - Score: 3.00
+smart-filter.ts:135 💗 CARDIOVASCULAR BOOST: "Prolonged Exposure to Microgravity Reduces Cardiac Contractility and Initiates Remodeling in Drosophila"
+smart-filter.ts:42 🩺 CARDIOVASCULAR PAPER: "Prolonged Exposure to Microgravity Reduces Cardiac Contractility and Initiates Remodeling in Drosophila" - Score: 3.19
+smart-filter.ts:135 💗 CARDIOVASCULAR BOOST: "Proteomic and phosphoproteomic characterization of cardiovascular tissues after long term exposure to simulated space radiation"
+smart-filter.ts:42 🩺 CARDIOVASCULAR PAPER: "Proteomic and phosphoproteomic characterization of cardiovascular tissues after long term exposure to simulated space radiation" - Score: 3.89
+smart-filter.ts:135 💗 CARDIOVASCULAR BOOST: "Cytoskeleton structure and total methylation of mouse cardiac and lung tissue during space flight."
+smart-filter.ts:42 🩺 CARDIOVASCULAR PAPER: "Cytoskeleton structure and total methylation of mouse cardiac and lung tissue during space flight." - Score: 3.00
+smart-filter.ts:135 💗 CARDIOVASCULAR BOOST: "Cardiovascular progenitor cells cultured aboard the International Space Station exhibit altered developmental and functional properties"
+smart-filter.ts:42 🩺 CARDIOVASCULAR PAPER: "Cardiovascular progenitor cells cultured aboard the International Space Station exhibit altered developmental and functional properties" - Score: 3.19
+smart-filter.ts:135 💗 CARDIOVASCULAR BOOST: "Effects of spaceflight aboard the International Space Station on mouse estrous cycle and ovarian gene expression"
+smart-filter.ts:135 💗 CARDIOVASCULAR BOOST: "NASA GeneLab derived microarray studies of Mus musculus and Homo sapiens organisms in altered gravitational conditions."
+smart-filter.ts:135 💗 CARDIOVASCULAR BOOST: "Differential effects of aging and exercise on intra-abdominal adipose arteriolar function and blood flow regulation."
+smart-filter.ts:135 💗 CARDIOVASCULAR BOOST: "Effects of Skeletal Unloading on the Vasomotor Properties of the Rat Femur Principal Nutrient Artery"
+smart-filter.ts:135 💗 CARDIOVASCULAR BOOST: "Type 2 diabetes alters bone and marrow blood flow and vascular control mechanisms in the ZDF rat."
+smart-filter.ts:135 💗 CARDIOVASCULAR BOOST: "Apollo Lunar Astronauts Show Higher Cardiovascular Disease Mortality: Possible Deep Space Radiation Effects on the Vascular Endothelium"
+smart-filter.ts:42 🩺 CARDIOVASCULAR PAPER: "Apollo Lunar Astronauts Show Higher Cardiovascular Disease Mortality: Possible Deep Space Radiation Effects on the Vascular Endothelium" - Score: 3.19
+smart-filter.ts:135 💗 CARDIOVASCULAR BOOST: "Effects of age and exercise training on coronary microvascular smooth muscle phenotype and function"
+smart-filter.ts:135 💗 CARDIOVASCULAR BOOST: "Preservation of Multiple Mammalian Tissues to Maximize Science Return from Ground Based and Spaceflight Experiments"
+smart-filter.ts:135 💗 CARDIOVASCULAR BOOST: "Influence of social isolation during prolonged simulated weightlessness by hindlimb unloading"
+smart-filter.ts:135 💗 CARDIOVASCULAR BOOST: "Bone hemodynamic responses to changes in external pressure."
+smart-filter.ts:135 💗 CARDIOVASCULAR BOOST: "n-3 Polyunsaturated fatty acids supplementation in peripheral artery disease: the OMEGA-PAD trial"
+smart-filter.ts:135 💗 CARDIOVASCULAR BOOST: "MnSOD Overexpression Reduces Fibrosis and Pro-Apoptotic Signaling in the Aging Mouse Heart"
+smart-filter.ts:42 🩺 CARDIOVASCULAR PAPER: "MnSOD Overexpression Reduces Fibrosis and Pro-Apoptotic Signaling in the Aging Mouse Heart" - Score: 3.00
+smart-filter.ts:135 💗 CARDIOVASCULAR BOOST: "Effects of low-dose rate Œ≥-irradiation combined with simulated microgravity on markers of oxidative stress, DNA methylation potential, and remodeling in the mouse heart"
+smart-filter.ts:42 🩺 CARDIOVASCULAR PAPER: "Effects of low-dose rate Œ≥-irradiation combined with simulated microgravity on markers of oxidative stress, DNA methylation potential, and remodeling in the mouse heart" - Score: 3.00
+smart-filter.ts:135 💗 CARDIOVASCULAR BOOST: "Protective alleles and precision healthcare in crewed spaceflight"
+smart-filter.ts:135 💗 CARDIOVASCULAR BOOST: "Plasma membrane disruption (PMD) formation and repair in mechanosensitive tissues"
+smart-filter.ts:135 💗 CARDIOVASCULAR BOOST: "Transcriptomic effects on the mouse heart following 30 days on the International Space Station."
+smart-filter.ts:42 🩺 CARDIOVASCULAR PAPER: "Transcriptomic effects on the mouse heart following 30 days on the International Space Station." - Score: 3.20
+smart-filter.ts:135 💗 CARDIOVASCULAR BOOST: "The partial weight-bearing rat model using a pelvic harness does not impact stress or hindlimb blood flow."
+smart-filter.ts:135 💗 CARDIOVASCULAR BOOST: "Simulated microgravity alters gene regulation linked to immunity and cardiovascular disease"
+smart-filter.ts:42 🩺 CARDIOVASCULAR PAPER: "Simulated microgravity alters gene regulation linked to immunity and cardiovascular disease" - Score: 3.39
+smart-filter.ts:135 💗 CARDIOVASCULAR BOOST: "Swim exercise in Caenorhabditis elegans extends neuromuscular and gut healthspan, enhances learning ability, and protects against neurodegeneration"
+smart-filter.ts:135 💗 CARDIOVASCULAR BOOST: "Molecular muscle experiment: Hardware and operational lessons for future astrobiology space experiments"
+smart-filter.ts:135 💗 CARDIOVASCULAR BOOST: "The individual and combined effects of spaceflight radiation and microgravity on biologic systems and functional outcomes"
+smart-filter.ts:135 💗 CARDIOVASCULAR BOOST: "Immunization induces inflammation in the mouse heart during spaceflight."
+smart-filter.ts:42 🩺 CARDIOVASCULAR PAPER: "Immunization induces inflammation in the mouse heart during spaceflight." - Score: 3.20
+smart-filter.ts:135 💗 CARDIOVASCULAR BOOST: "Sex-specific cardiovascular adaptations to simulated microgravity in Sprague-Dawley rats"
+smart-filter.ts:42 🩺 CARDIOVASCULAR PAPER: "Sex-specific cardiovascular adaptations to simulated microgravity in Sprague-Dawley rats" - Score: 3.89
+smart-filter.ts:135 💗 CARDIOVASCULAR BOOST: "Simulated microgravity alters gene regulation linked to immunity and cardiovascular disease."
+smart-filter.ts:42 🩺 CARDIOVASCULAR PAPER: "Simulated microgravity alters gene regulation linked to immunity and cardiovascular disease." - Score: 3.39
+smart-filter.ts:55 ✅ Filtrados: 5 papers más relevantes
+smart-filter.ts:56 📊 Scores: 4.26, 3.89, 3.89, 3.89, 3.56
+smart-filter.ts:63 📋 Papers seleccionados:
+smart-filter.ts:65    1. "Protective alleles and precision healthcare in crewed spaceflight" (4.26)
+smart-filter.ts:65    2. "Spaceflight Modulates the Expression of Key Oxidative Stress and Cell Cycle Related Genes in Heart" (3.89)
+smart-filter.ts:65    3. "Proteomic and phosphoproteomic characterization of cardiovascular tissues after long term exposure to simulated space radiation" (3.89)
+smart-filter.ts:65    4. "Sex-specific cardiovascular adaptations to simulated microgravity in Sprague-Dawley rats" (3.89)
+smart-filter.ts:65    5. "Influence of social isolation during prolonged simulated weightlessness by hindlimb unloading" (3.56)
 simple-gemini-client.ts:129 ✅ Papers filtrados: 5
-simple-gemini-client.ts:204 🌐 URLs a analizar: 5 (vs 607 originales)
-simple-gemini-client.ts:236 🌐 Analizando 5 URLs con contexto...
-simple-gemini-client.ts:276 ✅ Respuesta completa recibida
-simple-gemini-client.ts:280 🎯 Investigación completa exitosa: Object
-SimpleResearchTool.tsx:77 ✅ Investigación completa finalizada: Object
+simple-gemini-client.ts:212 🌐 URLs a analizar: 5 (vs 607 originales)
+simple-gemini-client.ts:244 🌐 Analizando 5 URLs con contexto...
+simple-gemini-client.ts:284 ✅ Respuesta completa recibida
+simple-gemini-client.ts:288 🎯 Investigación completa exitosa: {searchSummary: 'The initial search involved analyzing 607 papers t…social isolation during simulated weightlessness.', relevantPapers: Array(5), synthesizedAnswer: 'Spaceflight induces several cardiovascular changes…ntermeasures for both male and female astronauts.', keyInsights: Array(3), recommendations: Array(4), …}
+SimpleResearchTool.tsx:77 ✅ Investigación completa finalizada: {searchSummary: 'The initial search involved analyzing 607 papers t…social isolation during simulated weightlessness.', relevantPapers: Array(5), synthesizedAnswer: 'Spaceflight induces several cardiovascular changes…ntermeasures for both male and female astronauts.', keyInsights: Array(3), recommendations: Array(4), …}

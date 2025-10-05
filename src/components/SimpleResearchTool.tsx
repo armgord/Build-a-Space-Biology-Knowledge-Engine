@@ -15,7 +15,15 @@ import {
 // Importamos los datos del JSON
 import nasaArticles from "../data/nasa_articles_context.json";
 
-const SimpleResearchTool: React.FC = () => {
+interface SimpleResearchToolProps {
+  initialQuery?: string;
+  initialResult?: any;
+}
+
+const SimpleResearchTool: React.FC<SimpleResearchToolProps> = ({
+  initialQuery = "",
+  initialResult = null,
+}) => {
   const [userQuery, setUserQuery] = useState("");
   const [isSearching, setIsSearching] = useState(false);
   const [searchResults, setSearchResults] = useState<SearchResult | null>(null);
@@ -31,6 +39,38 @@ const SimpleResearchTool: React.FC = () => {
   const [isResearching, setIsResearching] = useState(false);
 
   const { client, connected } = useSimpleNASAAPIContext();
+
+  // Sync with voice assistant results
+  React.useEffect(() => {
+    if (initialQuery && initialQuery !== userQuery) {
+      setUserQuery(initialQuery);
+    }
+    if (initialResult && initialResult !== completeResult) {
+      setCompleteResult(initialResult);
+
+      // Also create search results for display
+      if (
+        initialResult.relevantPapers &&
+        initialResult.relevantPapers.length > 0
+      ) {
+        const allPapers = (nasaArticles as any).articles;
+        const foundPapers = initialResult.relevantPapers
+          .map((analyzedPaper: any) => {
+            return allPapers.find(
+              (originalPaper: any) =>
+                originalPaper.title === analyzedPaper.title
+            );
+          })
+          .filter(Boolean);
+
+        setSearchResults({
+          relevantPapers: foundPapers,
+          searchQuery: initialQuery,
+          summary: initialResult.searchSummary || "Results from voice query",
+        });
+      }
+    }
+  }, [initialQuery, initialResult]);
 
   // NUEVO: Investigación completa automatizada
   // Hace TODO: buscar papers relevantes + análisis completo + síntesis
@@ -271,17 +311,23 @@ const SimpleResearchTool: React.FC = () => {
           {/* NUEVO: Resumen de búsqueda */}
           {completeResult.searchSummary && (
             <div className="search-summary">
-              <h3>🔍 Selección de Papers</h3>
+              <h3>🔍 Proceso de Filtrado Inteligente</h3>
               <p className="search-explanation">
                 {completeResult.searchSummary}
               </p>
-              {completeResult.totalPapersAnalyzed && (
+              <div className="filtering-stats">
                 <p>
-                  <strong>
-                    📊 Papers analizados: {completeResult.totalPapersAnalyzed}
-                  </strong>
+                  <strong>📊 Papers revisados:</strong> 607 papers de NASA
                 </p>
-              )}
+                <p>
+                  <strong>🎯 Papers seleccionados:</strong>{" "}
+                  {completeResult.relevantPapers.length} más relevantes
+                </p>
+                <p>
+                  <strong>⚡ Optimización:</strong> Filtrado inteligente por
+                  relevancia
+                </p>
+              </div>
             </div>
           )}
 
@@ -316,8 +362,16 @@ const SimpleResearchTool: React.FC = () => {
 
           <div className="analyzed-papers">
             <h3>
-              📚 Papers Analizados ({completeResult.relevantPapers.length})
+              📚 Análisis Detallado de Papers Seleccionados (
+              {completeResult.relevantPapers.length})
             </h3>
+            <div className="analysis-note">
+              <p>
+                <strong>ℹ️ Proceso:</strong> De 607 papers disponibles →
+                Filtrado inteligente → {completeResult.relevantPapers.length}{" "}
+                papers más relevantes → Análisis completo por Gemini AI
+              </p>
+            </div>
             {completeResult.relevantPapers.map((paper, index) => (
               <div key={index} className="analyzed-paper-card">
                 <h4>{paper.title}</h4>

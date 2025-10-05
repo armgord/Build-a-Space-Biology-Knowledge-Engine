@@ -28,9 +28,22 @@ export class SmartPaperFilter {
     papers.forEach((paper) => {
       const score = this.calculateRelevanceScore(paper, queryWords, userQuery);
 
-      if (score.relevanceScore > 0.3) {
-        // Umbral mínimo
+      if (score.relevanceScore > 0.1) {
+        // Umbral mínimo REDUCIDO para debug
         scoredPapers.push(score);
+      }
+
+      // DEBUG: Log papers cardiovasculares específicos
+      if (
+        paper.title.toLowerCase().includes("cardiovascular") ||
+        paper.title.toLowerCase().includes("cardiac") ||
+        paper.title.toLowerCase().includes("heart")
+      ) {
+        console.log(
+          `🩺 CARDIOVASCULAR PAPER: "${
+            paper.title
+          }" - Score: ${score.relevanceScore.toFixed(2)}`
+        );
       }
     });
 
@@ -45,6 +58,16 @@ export class SmartPaperFilter {
         .map((p) => p.relevanceScore.toFixed(2))
         .join(", ")}`
     );
+
+    // DEBUG: Mostrar títulos de papers seleccionados
+    console.log(`📋 Papers seleccionados:`);
+    filtered.forEach((paper, i) => {
+      console.log(
+        `   ${i + 1}. "${paper.paper.title}" (${paper.relevanceScore.toFixed(
+          2
+        )})`
+      );
+    });
 
     return filtered;
   }
@@ -92,9 +115,32 @@ export class SmartPaperFilter {
     const semanticScore = this.calculateSemanticSimilarity(paper, userQuery);
     score += semanticScore;
 
+    // 6. NUEVO: Boost cardiovascular específico
+    let cardiovascularBoost = 0;
+    if (
+      userQuery.toLowerCase().includes("cardiovascular") ||
+      userQuery.toLowerCase().includes("cardiac") ||
+      userQuery.toLowerCase().includes("heart")
+    ) {
+      const paperText = `${paper.title} ${paper.abstract} ${paper.keywords.join(
+        " "
+      )}`.toLowerCase();
+      if (
+        paperText.includes("cardiovascular") ||
+        paperText.includes("cardiac") ||
+        paperText.includes("heart") ||
+        paperText.includes("cardiomyocyte")
+      ) {
+        cardiovascularBoost = 3.0; // BOOST SIGNIFICATIVO
+        console.log(`💗 CARDIOVASCULAR BOOST: "${paper.title}"`);
+      }
+    }
+
+    const finalScore = score + cardiovascularBoost;
+
     return {
       paper,
-      relevanceScore: Math.min(score, 10), // Cap a 10
+      relevanceScore: Math.min(finalScore, 10), // Cap a 10
       matchedKeywords,
       titleMatch,
       abstractMatch,
