@@ -1,0 +1,114 @@
+Since your source links point to PubMed Central (PMC) articles via the PMC ID, we can leverage the NCBI's powerful E-utilities API using the BioPython library to download the actual metadata (year, abstract, keywords).
+
+This requires replacing the mock data generation with a dedicated Web Retrieval Module.
+
+Here is the step-by-step guidance for implementing this real data extraction and integrating it into your Gemini pipeline.
+
+1. New Tool & Setup for Data Extraction
+1.1. Install BioPython
+You need the BioPython library to communicate with NCBI (the National Center for Biotechnology Information).
+
+Install: In your PyCharm terminal, run:
+
+Bash
+
+pip install biopython
+NCBI API Key (Optional but Highly Recommended): The NCBI limits requests to 3 per second without an API key. You should get a free NCBI API key and add it to your .env file to increase this limit, which is essential for processing hundreds of papers quickly.
+
+Bash
+
+# .env file content
+...
+NCBI_EMAIL="your.email@example.com" # Required by Entrez
+NCBI_API_KEY="YOUR_NCBI_API_KEY" # Highly recommended
+1.2. New Module: src/metadata_retrieval.py
+This is the new script that replaces the mock data generation.
+
+Python
+
+# src/metadata_retrieval.py
+
+from Bio import Entrez
+import pandas as pd
+import time
+import re
+
+# Set Entrez credentials globally (needed for every request)
+def setup_entrez(email: str, api_key: str = None):
+    Entrez.email = email
+    if api_key:
+        Entrez.api_key = api_key
+
+def extract_pmc_id(link: str) -> str:
+    """Extracts the numerical PMC ID from the link string."""
+    match = re.search(r'PMC(\d+)', link)
+    return match.group(1) if match else None
+
+def fetch_metadata_from_pmc_id(pmc_id: str):
+    """Fetches real metadata (year, abstract) using the PMC ID."""
+    if not pmc_id:
+        return None
+        
+    try:
+        # 1. Search PMC database (using the PMC ID is required)
+        handle = Entrez.esearch(db="pmc", term=pmc_id, retmode="xml")
+        record = Entrez.read(handle)
+        handle.close()
+        id_list = record.get("IdList", [])
+        
+        if not id_list:
+            # PMC ID not found directly, try searching PubMed with the same ID (often linked)
+            return {"abstract": "Abstract not found in PMC.","year": 0,"keywords": "Not available"}
+            
+        # 2. Fetch the detailed article record from PubMed/MEDLINE database
+        # We use PubMed/Medline as it has richer metadata structure than PMC XML
+        handle = Entrez.efetch(db="pubmed", id=id_list[0], retmode="xml")
+        xml_data = Entrez.read(handle)
+        handle.close()
+        
+        # 3. Parse XML to extract fields
+        article = xml_data['MedlineCitation'][0]['Article']
+        
+        # Extract Abstract
+        abstract_texts = article['Abstract']['AbstractText']
+        abstract = " ".join(abstract_texts) if isinstance(abstract_texts, list) else str(abstract_texts)
+        
+        # Extract Year
+        year = article['Journal']['JournalIssue']['PubDate'].get('Year', 'N/A')
+        
+        # Extract Keywords (if available)
+        keywords = xml_data['MedlineCitation'][0].get('KeywordList', [])
+        keywords_str = "; ".join([str(k) for k in keywords])
+
+        # NCBI API limits requests, so we need a small delay
+        time.sleep(0.5) 
+
+        return {
+            "abstract": abstract,
+            "year": int(year) if year.isdigit() else 0,
+            "keywords": keywords_str
+        }
+
+    except Exception as e:
+        print(f"Error fetching data for PMC ID {pmc_id}: {e}")
+        return {"abstract": f"Error: {e}", "year": 0, "keywords": "Error"}
+
+def transform_real_data(df: pd.DataFrame) -> pd.DataFrame:
+    """Orchestrates the entire real data fetching process."""
+    
+    df['pmc_id'] = df['link'].apply(extract_pmc_id)
+    
+    # Apply the fetching function to every row
+    # tqdm is recommended here for progress bar, but is omitted for brevity.
+    metadata = df['pmc_id'].apply(fetch_metadata_from_pmc_id)
+    
+    # Expand the dictionary results into DataFrame columns
+    df['abstract'] = metadata.apply(lambda x: x['abstract'])
+    df['year'] = metadata.apply(lambda x: x['year'])
+    df['keywords'] = metadata.apply(lambda x: x['keywords'])
+    
+    # Final combined text field for Gemini and paper ID
+    df['paper_id'] = 'paper-' + df['pmc_id']
+    df['full_text_to_embed'] = df['title'] + " " + df['keywords'].fillna('') + " " + df['abstract']
+    
+    return df

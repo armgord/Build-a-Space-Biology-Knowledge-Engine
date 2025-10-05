@@ -1,0 +1,31 @@
+Use Gemini for (A) embeddings (semantic search / RAG index), (B) generation (summaries, answers, structured JSON output), and (C) multimodal / long-context processing (when you need to feed long paper sections or figures). Use the Google GenAI Python SDK (google-genai) or Vertex AI integration (both supported). Get an API key from Google AI Studio (MLH links make that easy).
+https://ai.google.dev/gemini-api/docs/quickstart?utm_source=chatgpt.com
+
+Embeddings — Gemini provides production-grade text embedding models (e.g., gemini-embedding-001) you can use to vector-index paper chunks for semantic search / similarity. Perfect for RAG. 
+Google Developers Blog
+https://developers.googleblog.com/en/gemini-embedding-available-gemini-api/?utm_source=chatgpt.com
+
+Text generation & structured output — the API supports system prompts, JSON/structured output mode, and instruction-style prompts so you can extract findings as JSON (triples) from Results/Conclusions. Very useful for auto-generating the facts that feed a knowledge graph. 
+Google AI for Developers
+https://ai.google.dev/gemini-api/docs/structured-output?utm_source=chatgpt.com
+
+
+Long-context & multimodal — Gemini variants have long-context support and multimodal features (documents/images/audio). That helps if you want to feed whole Results sections, tables, or images to the model. 
+Google AI for Developers
+https://ai.google.dev/gemini-api/docs/models?utm_source=chatgpt.com
+
+SDKs & cookbooks — Google provides the google-genai Python SDK and an official “cookbook” (examples + quickstarts) that show embeddings, generation, JSON-mode, code execution tools, and Vertex AI integration. Use those examples as a starting point. 
+Google APIs
+https://googleapis.github.io/python-genai/?utm_source=chatgpt.com
+
+API key & AI Studio — get your Gemini API key in Google AI Studio (MLH guide points you here). The docs show how to create/manage keys and how to authenticate the SDK with an env var. 
+Google AI for Developers
+https://ai.google.dev/gemini-api/docs/api-key?utm_source=chatgpt.com
+
+Intro to Google AI Studio. Grab an API Key in a flash at mlh.link/aistudio. Google Gemini swag raffle.
+1. Acess the google gemini: mlh.link/gemini-quickstart
+2. Reference the Gemini API documentation (mlh.link/gemini-docs
+3. Find Gemini API code examples: mlh.link/gemini-cookbook
+I think we have Google AI pro for free
+
+Start building with google gemini: mlh.link/gemini

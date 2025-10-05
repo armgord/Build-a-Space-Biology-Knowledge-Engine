@@ -1,0 +1,165 @@
+Idea Realista: "NASA BioFinder - Dashboard Simplificado"
+Concepto: Un dashboard que muestre los artículos con búsqueda y filtros básicos, enriquecido con IA solo donde sea crítico y simple.
+
+Plan Simplificado (24 horas)
+Hora 0-2: Setup y Datos Básicos
+
+Estructura del proyecto:
+
+text
+/nasa-dashboard
+├── app.py (backend Flask)
+├── templates/ (HTML)
+├── static/ (CSS, JS)
+└── data.csv
+Preparar datos: Si el CSV solo tiene títulos y URLs, agreguen columnas manualmente para los primeros 20-30 artículos:
+
+Organismo (ratón, planta, humano, etc.)
+
+Año (pueden estimarlo del título)
+
+Misión (ISS, Apollo, etc.)
+
+3 palabras clave del tema
+
+Hora 2-6: Backend Sencillo (Python + Flask)
+
+python
+from flask import Flask, render_template, request, jsonify
+import pandas as pd
+
+app = Flask(__name__)
+df = pd.read_csv('data.csv')  # Tus datos enriquecidos manualmente
+
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+@app.route('/api/articles')
+def get_articles():
+    # Filtros básicos por organismo/misión
+    organismo = request.args.get('organismo')
+    if organismo:
+        results = df[df['organismo'] == organismo].to_dict('records')
+    else:
+        results = df.to_dict('records')
+    return jsonify(results)
+Hora 6-12: Frontend Básico (HTML + CSS + JavaScript vanilla)
+
+index.html: Estructura simple con:
+
+Barra de búsqueda
+
+Filtros desplegables (organismo, misión)
+
+Área para tarjetas de artículos
+
+Un gráfico simple
+
+CSS: Usen Bootstrap CDN o CSS grid simple:
+
+html
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+Hora 12-18: Funcionalidades Clave
+
+Búsqueda y filtros en JavaScript:
+
+javascript
+// Filtro simple por título
+function filtrarArticulos() {
+    const busqueda = document.getElementById('busqueda').value.toLowerCase();
+    const articulos = document.getElementsByClassName('articulo-card');
+    
+    for (let articulo of articulos) {
+        const titulo = articulo.getAttribute('data-titulo').toLowerCase();
+        articulo.style.display = titulo.includes(busqueda) ? 'block' : 'none';
+    }
+}
+Tarjetas de artículos que muestren:
+
+Título
+
+Organismo
+
+Misión
+
+Año
+
+Botón "Ver más" que lleve al PDF
+
+Hora 18-22: El "Factor Wow" Sencillo
+
+Gráfico de barras simple con Chart.js:
+
+html
+<canvas id="miGrafico"></canvas>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Contar organismos y mostrar gráfico
+    const ctx = document.getElementById('miGrafico').getContext('2d');
+    const myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Ratones', 'Plantas', 'Humanos'],
+            datasets: [{
+                label: 'Estudios por organismo',
+                data: [12, 8, 15]
+            }]
+        }
+    });
+</script>
+Una sola característica con IA: Usen una API gratuita como:
+
+OpenAI API ($5 de crédito gratis) para generar resúmenes de solo 5-10 artículos clave
+
+O Hugging Face con un modelo simple de resumen
+
+Hora 22-24: Pulido y Presentación
+
+Revisar que todo funcione
+
+Preparar demo de 2 minutos
+
+Hacer el README en GitHub
+
+Características Mínimas Viables
+✅ Lista de artículos con información básica
+
+✅ Búsqueda por título
+
+✅ Filtros por organismo/misión
+
+✅ Un gráfico simple (Chart.js es fácil)
+
+✅ Diseño responsive con Bootstrap
+
+⭐ Extra: Resúmenes con IA para algunos artículos
+
+Qué Omitir
+❌ No procesen todos los PDFs automáticamente
+
+❌ No usen bases de datos complejas (usen CSV/JSON)
+
+❌ No hagan gráficos 3D o muy complejos
+
+❌ No implementen login/users
+
+Demo de 2 Minutos
+"Este es nuestro dashboard de investigaciones de la NASA"
+
+"Pueden buscar términos como 'bone' o 'muscle'" (muestran búsqueda)
+
+"Y filtrar por organismo como 'mouse'" (muestran filtro)
+
+"Aquí ven cuántos estudios hay por tipo" (muestran gráfico)
+
+"Y lo más cool: usamos IA para resumir hallazgos clave" (muestran resumen de 1 artículo)
+
+Recursos Sencillos
+Flask: Más fácil que FastAPI para principiantes
+
+Bootstrap: Para diseño sin sufrir
+
+Chart.js: Gráficos simples
+
+Pandas: Para manejar el CSV
