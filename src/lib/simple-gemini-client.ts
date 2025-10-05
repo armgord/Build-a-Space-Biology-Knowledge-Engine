@@ -13,10 +13,13 @@ export interface SimpleGeminiClient {
 export class SimpleGeminiHTTPClient implements SimpleGeminiClient {
   private apiKey: string;
   private baseURL: string;
+  private backendURL: string | null;
 
   constructor(apiKey: string) {
     this.apiKey = apiKey;
     this.baseURL = "https://generativelanguage.googleapis.com/v1beta/models";
+    // Optional: route through backend when available to avoid exposing API key
+    this.backendURL = (process.env.REACT_APP_BACKEND_URL || "").trim() || null;
   }
 
   /**
@@ -27,27 +30,33 @@ export class SimpleGeminiHTTPClient implements SimpleGeminiClient {
       console.log("🤖 Enviando query a Gemini...");
       console.log("📝 Prompt enviado:", prompt.substring(0, 200) + "...");
 
-      const response = await fetch(
-        `${this.baseURL}/gemini-2.0-flash-exp:generateContent?key=${this.apiKey}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            contents: [
-              {
-                parts: [{ text: prompt }],
+      const response = this.backendURL
+        ? await fetch(`${this.backendURL}/api/simple_query`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ prompt }),
+          })
+        : await fetch(
+            `${this.baseURL}/gemini-2.0-flash-exp:generateContent?key=${this.apiKey}`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
               },
-            ],
-            generationConfig: {
-              temperature: 0.1,
-              maxOutputTokens: 2048,
-              responseMimeType: "application/json",
-            },
-          }),
-        }
-      );
+              body: JSON.stringify({
+                contents: [
+                  {
+                    parts: [{ text: prompt }],
+                  },
+                ],
+                generationConfig: {
+                  temperature: 0.1,
+                  maxOutputTokens: 2048,
+                  responseMimeType: "application/json",
+                },
+              }),
+            }
+          );
 
       if (!response.ok) {
         throw new Error(`Gemini API error: ${response.status}`);
@@ -87,6 +96,16 @@ export class SimpleGeminiHTTPClient implements SimpleGeminiClient {
     try {
       console.log("🔗 Analizando URL con Gemini:", url);
 
+      if (this.backendURL) {
+        const response = await fetch(`${this.backendURL}/api/analyze_url`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ url, prompt }),
+        });
+        if (!response.ok) throw new Error(`Backend error: ${response.status}`);
+        return await response.json();
+      }
+
       const fullPrompt = `
         Analiza el contenido de esta URL: ${url}
         
@@ -94,9 +113,6 @@ export class SimpleGeminiHTTPClient implements SimpleGeminiClient {
         
         Si no puedes acceder a la URL, responde con un mensaje explicando la limitación.
       `;
-
-      // Por ahora usamos el mismo método simple
-      // En el futuro podríamos usar BioPython para extraer el contenido primero
       return await this.simpleQuery(fullPrompt);
     } catch (error) {
       console.error("❌ Error in analyzeURL:", error);
@@ -290,6 +306,15 @@ export class SimpleGeminiHTTPClient implements SimpleGeminiClient {
         }
       `;
 
+      if (this.backendURL) {
+        const response = await fetch(`${this.backendURL}/api/complete_research`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ userQuery, papers }),
+        });
+        if (!response.ok) throw new Error(`Backend error: ${response.status}`);
+        return await response.json();
+      }
       return await this.queryWithURLContext(selectedUrls, analysisPrompt);
     } catch (error) {
       console.error("❌ Error in completeResearch:", error);
