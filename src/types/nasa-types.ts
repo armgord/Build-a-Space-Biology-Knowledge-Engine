@@ -32,10 +32,18 @@ export interface PaperAnalysis {
 }
 
 export interface CompleteResearchResult {
-  relevantPapers: PaperAnalysis[];
+  searchSummary: string;
+  relevantPapers: EnhancedPaperAnalysis[];
   synthesizedAnswer: string;
   keyInsights: string[];
   recommendations: string[];
   confidence: number;
+  totalPapersAnalyzed: number;
   sources: string[];
+}
+
+export interface EnhancedPaperAnalysis extends PaperAnalysis {
+  year: number;
+  authors: string[];
+  relevanceReason: string;
 }

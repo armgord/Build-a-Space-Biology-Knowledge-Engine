@@ -33,6 +33,7 @@ const SimpleResearchTool: React.FC = () => {
   const { client, connected } = useSimpleNASAAPIContext();
 
   // NUEVO: Investigación completa automatizada
+  // Hace TODO: buscar papers relevantes + análisis completo + síntesis
   const handleCompleteResearch = async () => {
     if (!userQuery.trim() || !connected) return;
 
@@ -49,7 +50,30 @@ const SimpleResearchTool: React.FC = () => {
 
       const result = await client.completeResearch(userQuery, allPapers);
 
+      // Establecer AMBOS resultados: completo Y búsqueda simple
       setCompleteResult(result);
+
+      // NUEVO: También crear resultados de búsqueda para mostrar papers encontrados
+      if (result.relevantPapers && result.relevantPapers.length > 0) {
+        // Encontrar los papers originales del JSON que coincidan
+        const foundPapers = result.relevantPapers
+          .map((analyzedPaper: any) => {
+            return allPapers.find(
+              (originalPaper: any) =>
+                originalPaper.title === analyzedPaper.title
+            );
+          })
+          .filter(Boolean); // Remover nulls
+
+        setSearchResults({
+          relevantPapers: foundPapers,
+          searchQuery: userQuery,
+          summary:
+            result.searchSummary ||
+            "Papers encontrados y analizados automáticamente",
+        });
+      }
+
       console.log("✅ Investigación completa finalizada:", result);
     } catch (error) {
       console.error("❌ Error en investigación completa:", error);
@@ -216,15 +240,24 @@ const SimpleResearchTool: React.FC = () => {
                   <strong>Abstract:</strong> {paper.abstract.substring(0, 200)}
                   ...
                 </p>
-                <button
-                  onClick={() => handleAnalyzePaper(paper)}
-                  disabled={isAnalyzing}
-                  className="analyze-button"
-                >
-                  {isAnalyzing && selectedPaper?.title === paper.title
-                    ? "🔬 Analizando..."
-                    : "🔬 Analizar Paper"}
-                </button>
+                {/* Solo mostrar botón de análisis manual si NO es investigación completa */}
+                {!completeResult && (
+                  <button
+                    onClick={() => handleAnalyzePaper(paper)}
+                    disabled={isAnalyzing}
+                    className="analyze-button"
+                  >
+                    {isAnalyzing && selectedPaper?.title === paper.title
+                      ? "🔬 Analizando..."
+                      : "🔬 Analizar Paper"}
+                  </button>
+                )}
+                {/* Si ES investigación completa, mostrar mensaje */}
+                {completeResult && (
+                  <div className="auto-analyzed-badge">
+                    ✅ Ya analizado automáticamente abajo
+                  </div>
+                )}
               </div>
             ))}
           </div>
@@ -235,6 +268,23 @@ const SimpleResearchTool: React.FC = () => {
       {completeResult && (
         <div className="complete-research-results">
           <h2>🎯 Investigación Completa Automatizada</h2>
+
+          {/* NUEVO: Resumen de búsqueda */}
+          {completeResult.searchSummary && (
+            <div className="search-summary">
+              <h3>🔍 Selección de Papers</h3>
+              <p className="search-explanation">
+                {completeResult.searchSummary}
+              </p>
+              {completeResult.totalPapersAnalyzed && (
+                <p>
+                  <strong>
+                    📊 Papers analizados: {completeResult.totalPapersAnalyzed}
+                  </strong>
+                </p>
+              )}
+            </div>
+          )}
 
           <div className="research-summary">
             <h3>📋 Respuesta Sintetizada</h3>
@@ -272,19 +322,43 @@ const SimpleResearchTool: React.FC = () => {
             {completeResult.relevantPapers.map((paper, index) => (
               <div key={index} className="analyzed-paper-card">
                 <h4>{paper.title}</h4>
-                <p>
-                  <strong>Relevancia:</strong> {paper.relevanceScore}/10
-                </p>
+
+                <div className="paper-metadata">
+                  {(paper as any).year && (
+                    <p>
+                      <strong>📅 Año:</strong> {(paper as any).year}
+                    </p>
+                  )}
+                  {(paper as any).authors &&
+                    (paper as any).authors.length > 0 && (
+                      <p>
+                        <strong>👥 Autores:</strong>{" "}
+                        {(paper as any).authors.join(", ")}
+                      </p>
+                    )}
+                  <p>
+                    <strong>📊 Relevancia:</strong> {paper.relevanceScore}/10
+                  </p>
+                </div>
+
+                {(paper as any).relevanceReason && (
+                  <div className="relevance-reason">
+                    <p>
+                      <strong>🎯 Por qué es relevante:</strong>{" "}
+                      {(paper as any).relevanceReason}
+                    </p>
+                  </div>
+                )}
 
                 {paper.methodology && (
                   <p>
-                    <strong>Metodología:</strong> {paper.methodology}
+                    <strong>🔬 Metodología:</strong> {paper.methodology}
                   </p>
                 )}
 
                 {paper.results && (
                   <p>
-                    <strong>Resultados:</strong> {paper.results}
+                    <strong>📈 Resultados:</strong> {paper.results}
                   </p>
                 )}
 
@@ -296,9 +370,11 @@ const SimpleResearchTool: React.FC = () => {
                 </ul>
 
                 {paper.limitations && (
-                  <p>
-                    <strong>⚠️ Limitaciones:</strong> {paper.limitations}
-                  </p>
+                  <div className="limitations">
+                    <p>
+                      <strong>⚠️ Limitaciones:</strong> {paper.limitations}
+                    </p>
+                  </div>
                 )}
 
                 <p>
