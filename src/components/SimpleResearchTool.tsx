@@ -5,6 +5,7 @@
 
 import React, { useState } from "react";
 import { useSimpleNASAAPIContext } from "../contexts/NASAAPIContext";
+import VoiceMicButton from "./VoiceMicButton";
 import {
   NASAPaper,
   SearchResult,
@@ -234,13 +235,19 @@ const SimpleResearchTool: React.FC<SimpleResearchToolProps> = ({
       {/* Paso 1: Input de búsqueda */}
       <div className="search-section">
         <h2>¿Qué quieres investigar?</h2>
-        <input
-          type="text"
-          value={userQuery}
-          onChange={(e) => setUserQuery(e.target.value)}
-          placeholder="Ej: efectos de microgravedad en huesos"
-          className="search-input"
-        />
+        <div className="search-input-container">
+          <input
+            type="text"
+            value={userQuery}
+            onChange={(e) => setUserQuery(e.target.value)}
+            placeholder="Ej: efectos de microgravedad en huesos"
+            className="search-input"
+          />
+          <VoiceMicButton
+            onVoiceInput={setUserQuery}
+            disabled={isSearching || isResearching || !connected}
+          />
+        </div>
         <div className="button-group">
           <button
             onClick={handleSearch}

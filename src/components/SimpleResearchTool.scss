@@ -20,12 +20,163 @@
   margin-bottom: 30px;
 }
 
+.search-input-container {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
 .search-input {
   width: 400px;
-  padding: 10px;
-  border: 1px solid #cbd5e0;
-  border-radius: 4px;
+  padding: 12px 60px 12px 16px; /* Extra padding for larger mic button */
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
   font-size: 16px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: #ffffff;
+
+  &:focus {
+    outline: none;
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+  }
+} /* Voice Microphone Button */
+.voice-mic-container {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+}
+
+.voice-mic-button {
+  background: transparent;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  color: #6b7280;
+  position: relative;
+  /* Asegurar que el contenido no se desborde */
+  overflow: visible;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.voice-mic-button:hover:not(.disabled) {
+  background: rgba(99, 102, 241, 0.12);
+  color: #4f46e5;
+  /* Removido transform: scale para evitar que se mueva */
+}
+
+.voice-mic-button.listening {
+  background: rgba(239, 68, 68, 0.1);
+  color: #dc2626;
+
+  .recording-pulse {
+    animation: pulse-recording 1.2s ease-in-out infinite;
+  }
+}
+
+.voice-mic-button.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  color: #9ca3af;
+}
+
+.mic-icon {
+  transition: all 0.2s ease;
+}
+
+.voice-error-tooltip {
+  position: absolute;
+  top: -30px;
+  right: 0;
+  background: #e53e3e;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  z-index: 10;
+}
+
+.voice-status-tooltip {
+  position: absolute;
+  top: -30px;
+  right: 0;
+  background: #48bb78;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  z-index: 10;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: translateY(-50%) scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: translateY(-50%) scale(1.1);
+  }
+}
+
+@keyframes pulse-recording {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Efecto sutil de brillo en hover */
+.voice-mic-button:hover:not(.disabled):not(.listening) {
+  box-shadow: 0 0 0 8px rgba(99, 102, 241, 0.04);
+}
+
+/* Efecto de ondas cuando está grabando */
+.voice-mic-button.listening::before {
+  content: "";
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  right: -4px;
+  bottom: -4px;
+  border: 2px solid rgba(239, 68, 68, 0.3);
+  border-radius: 50%;
+  animation: voice-wave 2s ease-in-out infinite;
+}
+
+@keyframes voice-wave {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.4);
+    opacity: 0;
+  }
 }
 
 .search-button {

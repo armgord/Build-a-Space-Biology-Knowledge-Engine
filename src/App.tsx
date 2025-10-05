@@ -6,10 +6,8 @@
 import React, { useState } from "react";
 import { SimpleNASAAPIProvider } from "./contexts/NASAAPIContext";
 import SimpleResearchTool from "./components/SimpleResearchTool";
-import VoiceAssistant from "./components/VoiceAssistant";
 import "./App.scss";
 import "./components/SimpleResearchTool.scss";
-import "./components/VoiceAssistant.scss";
 
 const App: React.FC = () => {
   const [voiceQuery, setVoiceQuery] = useState<string>("");
@@ -27,8 +25,6 @@ const App: React.FC = () => {
           <h1>🚀 NASA Space Biology Research Assistant</h1>
           <p>🎤 Voice-Powered • 🤖 AI-Enhanced • 📊 607 Research Papers</p>
         </div>
-
-        <VoiceAssistant onQueryResult={handleVoiceQuery} />
 
         <SimpleResearchTool
           initialQuery={voiceQuery}
