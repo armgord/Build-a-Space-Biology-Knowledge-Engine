@@ -5,7 +5,12 @@
 
 import React, { useState } from "react";
 import { useSimpleNASAAPIContext } from "../contexts/NASAAPIContext";
-import { NASAPaper, SearchResult, PaperAnalysis } from "../types/nasa-types";
+import {
+  NASAPaper,
+  SearchResult,
+  PaperAnalysis,
+  CompleteResearchResult,
+} from "../types/nasa-types";
 
 // Importamos los datos del JSON
 import nasaArticles from "../data/nasa_articles_context.json";
@@ -20,7 +25,39 @@ const SimpleResearchTool: React.FC = () => {
   );
   const [isAnalyzing, setIsAnalyzing] = useState(false);
 
+  // NUEVO: Estado para investigación completa automatizada
+  const [completeResult, setCompleteResult] =
+    useState<CompleteResearchResult | null>(null);
+  const [isResearching, setIsResearching] = useState(false);
+
   const { client, connected } = useSimpleNASAAPIContext();
+
+  // NUEVO: Investigación completa automatizada
+  const handleCompleteResearch = async () => {
+    if (!userQuery.trim() || !connected) return;
+
+    setIsResearching(true);
+    setCompleteResult(null);
+    setSearchResults(null);
+    setPaperAnalysis(null);
+
+    try {
+      console.log("🚀 Iniciando investigación completa para:", userQuery);
+
+      // Usar todos los papers disponibles para el análisis
+      const allPapers = (nasaArticles as any).articles;
+
+      const result = await client.completeResearch(userQuery, allPapers);
+
+      setCompleteResult(result);
+      console.log("✅ Investigación completa finalizada:", result);
+    } catch (error) {
+      console.error("❌ Error en investigación completa:", error);
+      alert("Error en la investigación. Revisa la consola.");
+    } finally {
+      setIsResearching(false);
+    }
+  };
 
   // Paso 1: Buscar papers relevantes en el JSON usando Gemini
   const handleSearch = async () => {
@@ -32,7 +69,7 @@ const SimpleResearchTool: React.FC = () => {
     try {
       console.log("🔍 Buscando papers relevantes para:", userQuery);
 
-      // Crear prompt simple para Gemini
+      // Crear prompt optimizado para Gemini con más contexto
       const searchPrompt = `
         Analiza esta colección de papers de NASA y encuentra los más relevantes para la consulta del usuario.
         
@@ -44,16 +81,24 @@ const SimpleResearchTool: React.FC = () => {
             (paper: any) => `
         Título: ${paper.title}
         Año: ${paper.year}
+        Keywords: ${paper.keywords.join(", ")}
+        Autores: ${paper.authors.join(", ")}
         Abstract: ${paper.abstract}
         ---
         `
           )
           .join("")}
         
+        INSTRUCCIONES:
+        - Analiza título, keywords, autores y abstract de cada paper
+        - Encuentra conexiones semánticas con la consulta del usuario
+        - Prioriza papers con keywords relevantes
+        - Considera la reputación de los autores si es relevante
+        
         Responde en JSON con este formato:
         {
           "relevantPapers": [lista de títulos de los 3-5 papers más relevantes],
-          "summary": "breve explicación de por qué estos papers son relevantes"
+          "summary": "breve explicación de por qué estos papers son relevantes, mencionando keywords clave encontradas"
         }
       `;
 
@@ -133,13 +178,23 @@ const SimpleResearchTool: React.FC = () => {
           placeholder="Ej: efectos de microgravedad en huesos"
           className="search-input"
         />
-        <button
-          onClick={handleSearch}
-          disabled={isSearching || !connected}
-          className="search-button"
-        >
-          {isSearching ? "🔍 Buscando..." : "🔍 Buscar Papers"}
-        </button>
+        <div className="button-group">
+          <button
+            onClick={handleSearch}
+            disabled={isSearching || !connected || isResearching}
+            className="search-button"
+          >
+            {isSearching ? "🔍 Buscando..." : "🔍 Buscar Papers"}
+          </button>
+
+          <button
+            onClick={handleCompleteResearch}
+            disabled={isResearching || !connected || isSearching}
+            className="research-button"
+          >
+            {isResearching ? "🚀 Investigando..." : "🚀 Investigación Completa"}
+          </button>
+        </div>
       </div>
 
       {/* Resultados de búsqueda */}
@@ -172,6 +227,101 @@ const SimpleResearchTool: React.FC = () => {
                 </button>
               </div>
             ))}
+          </div>
+        </div>
+      )}
+
+      {/* NUEVO: Resultados de investigación completa */}
+      {completeResult && (
+        <div className="complete-research-results">
+          <h2>🎯 Investigación Completa Automatizada</h2>
+
+          <div className="research-summary">
+            <h3>📋 Respuesta Sintetizada</h3>
+            <p className="synthesized-answer">
+              {completeResult.synthesizedAnswer}
+            </p>
+
+            <div className="confidence-score">
+              <strong>🎯 Confianza: {completeResult.confidence}/10</strong>
+            </div>
+          </div>
+
+          <div className="key-insights">
+            <h3>💡 Insights Clave</h3>
+            <ul>
+              {completeResult.keyInsights.map((insight, index) => (
+                <li key={index}>{insight}</li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="recommendations">
+            <h3>🔬 Recomendaciones</h3>
+            <ul>
+              {completeResult.recommendations.map((rec, index) => (
+                <li key={index}>{rec}</li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="analyzed-papers">
+            <h3>
+              📚 Papers Analizados ({completeResult.relevantPapers.length})
+            </h3>
+            {completeResult.relevantPapers.map((paper, index) => (
+              <div key={index} className="analyzed-paper-card">
+                <h4>{paper.title}</h4>
+                <p>
+                  <strong>Relevancia:</strong> {paper.relevanceScore}/10
+                </p>
+
+                {paper.methodology && (
+                  <p>
+                    <strong>Metodología:</strong> {paper.methodology}
+                  </p>
+                )}
+
+                {paper.results && (
+                  <p>
+                    <strong>Resultados:</strong> {paper.results}
+                  </p>
+                )}
+
+                <h5>🔍 Hallazgos Clave:</h5>
+                <ul>
+                  {paper.keyFindings.map((finding, fIndex) => (
+                    <li key={fIndex}>{finding}</li>
+                  ))}
+                </ul>
+
+                {paper.limitations && (
+                  <p>
+                    <strong>⚠️ Limitaciones:</strong> {paper.limitations}
+                  </p>
+                )}
+
+                <p>
+                  <strong>🔗 Fuente:</strong>{" "}
+                  <a href={paper.url} target="_blank" rel="noopener noreferrer">
+                    Ver Paper Original
+                  </a>
+                </p>
+              </div>
+            ))}
+          </div>
+
+          <div className="sources">
+            <h3>📖 Fuentes Consultadas</h3>
+            <ul>
+              {completeResult.sources.map((source, index) => (
+                <li key={index}>
+                  <a href={source} target="_blank" rel="noopener noreferrer">
+                    {source}
+                  </a>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
       )}

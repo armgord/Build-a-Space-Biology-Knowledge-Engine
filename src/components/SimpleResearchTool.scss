@@ -109,3 +109,92 @@
   background: #f8f9fa;
   border-radius: 4px;
 }
+
+/* NUEVOS ESTILOS PARA INVESTIGACIÓN COMPLETA */
+
+.button-group {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.research-button {
+  margin-left: 10px;
+  padding: 10px 20px;
+  background-color: #ff6b35;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.research-button:hover {
+  background-color: #e55529;
+}
+
+.research-button:disabled {
+  background-color: #a0aec0;
+  cursor: not-allowed;
+}
+
+.complete-research-results {
+  background: #f0f8ff;
+  border: 2px solid #0066cc;
+  border-radius: 12px;
+  padding: 24px;
+  margin-top: 30px;
+}
+
+.research-summary {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.synthesized-answer {
+  font-size: 18px;
+  line-height: 1.6;
+  color: #2d3748;
+  margin-bottom: 16px;
+}
+
+.confidence-score {
+  background: #e6fffa;
+  padding: 10px;
+  border-radius: 6px;
+  border-left: 4px solid #38b2ac;
+  color: #234e52;
+}
+
+.key-insights,
+.recommendations {
+  background: white;
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.analyzed-papers {
+  margin-top: 24px;
+}
+
+.analyzed-paper-card {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.sources {
+  background: #fafafa;
+  padding: 16px;
+  border-radius: 8px;
+  margin-top: 20px;
+}

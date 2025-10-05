@@ -26,4 +26,16 @@ export interface PaperAnalysis {
   keyFindings: string[];
   relevanceScore: number;
   summary: string;
+  methodology?: string;
+  results?: string;
+  limitations?: string;
+}
+
+export interface CompleteResearchResult {
+  relevantPapers: PaperAnalysis[];
+  synthesizedAnswer: string;
+  keyInsights: string[];
+  recommendations: string[];
+  confidence: number;
+  sources: string[];
 }
