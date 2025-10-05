@@ -163,6 +163,7 @@
   color: white;
   cursor: pointer;
   transition: all 0.2s ease;
+  margin-right: 3rem;
 
   &:hover:not(:disabled) {
     transform: translateY(-1px);
