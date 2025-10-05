@@ -20,17 +20,10 @@ const App: React.FC = () => {
 
   return (
     <SimpleNASAAPIProvider apiKey={process.env.REACT_APP_GEMINI_API_KEY || ""}>
-      <div className="nasa-app">
-        <div className="app-header">
-          <h1>🚀 NASA Space Biology Research Assistant</h1>
-          <p>🎤 Voice-Powered • 🤖 AI-Enhanced • 📊 607 Research Papers</p>
-        </div>
-
-        <SimpleResearchTool
-          initialQuery={voiceQuery}
-          initialResult={voiceResult}
-        />
-      </div>
+      <SimpleResearchTool
+        initialQuery={voiceQuery}
+        initialResult={voiceResult}
+      />
     </SimpleNASAAPIProvider>
   );
 };
