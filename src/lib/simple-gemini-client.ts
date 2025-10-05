@@ -106,30 +106,45 @@ export class SimpleGeminiHTTPClient implements SimpleGeminiClient {
 
   /**
    * NUEVO: Investigación completa automatizada - TODO en una sola llamada
-   * 1. Encuentra papers relevantes (como simpleQuery)
-   * 2. Genera resumen de relevancia
-   * 3. Analiza contenido completo de cada paper
-   * 4. Sintetiza todo en reporte final
+   * 1. FILTRADO INTELIGENTE pre-procesamiento
+   * 2. Encuentra papers relevantes (como simpleQuery)
+   * 3. Genera resumen de relevancia
+   * 4. Analiza contenido completo de cada paper
+   * 5. Sintetiza todo en reporte final
    */
   async completeResearch(userQuery: string, papers: any[]): Promise<any> {
     try {
       console.log("🔬 Iniciando investigación completa automatizada...");
+
+      // NUEVO: Importar y usar filtro inteligente
+      const { SmartPaperFilter } = await import("./smart-filter");
+
+      // PASO 1: Filtrado inteligente ANTES de enviar a Gemini
+      console.log(`📊 Papers totales: ${papers.length}`);
+      const filteredPapers = SmartPaperFilter.filterRelevantPapers(
+        papers,
+        userQuery,
+        5 // AJUSTADO: Máximo 5 papers para Gemini Free Tier
+      );
+      console.log(`✅ Papers filtrados: ${filteredPapers.length}`);
 
       const comprehensivePrompt = `
         Realiza una investigación científica completa y automatizada en 4 pasos:
 
         CONSULTA DEL USUARIO: "${userQuery}"
         
-        COLECCIÓN COMPLETA DE PAPERS NASA:
-        ${papers
+        PAPERS PRE-FILTRADOS MÁS RELEVANTES:
+        ${filteredPapers
           .map(
-            (paper, index) => `
-        ${index + 1}. Título: ${paper.title}
-        Año: ${paper.year}
-        Keywords: ${paper.keywords.join(", ")}
-        Autores: ${paper.authors.join(", ")}
-        Abstract: ${paper.abstract}
-        URL: ${paper.link}
+            (filtered, index) => `
+        ${index + 1}. Título: ${filtered.paper.title}
+        Año: ${filtered.paper.year}
+        Keywords: ${filtered.paper.keywords.join(", ")}
+        Autores: ${filtered.paper.authors.join(", ")}
+        Abstract: ${filtered.paper.abstract}
+        URL: ${filtered.paper.link}
+        SCORE RELEVANCIA: ${filtered.relevanceScore.toFixed(2)}/10
+        KEYWORDS MATCHED: ${filtered.matchedKeywords.join(", ")}
         ---`
           )
           .join("")}
@@ -181,116 +196,24 @@ export class SimpleGeminiHTTPClient implements SimpleGeminiClient {
         }
       `;
 
-      // LÍMITE IMPORTANTE: Gemini 2.0 Flash solo permite 20 URLs por request
-      // Primero usamos simpleQuery para encontrar los papers más relevantes
-      console.log(`📊 Total papers disponibles: ${papers.length}`);
-
-      // Hacer selección inteligente PRIMERO (sin URLs)
-      const selectionPrompt = `
-        PASO 1: SELECCIÓN DE PAPERS RELEVANTES
-        
-        CONSULTA DEL USUARIO: "${userQuery}"
-        
-        COLECCIÓN COMPLETA DE PAPERS NASA (${papers.length} papers):
-        ${papers
-          .map(
-            (paper, index) => `
-        ${index + 1}. Título: ${paper.title}
-        Año: ${paper.year}
-        Keywords: ${paper.keywords.join(", ")}
-        Autores: ${paper.authors.join(", ")}
-        Abstract: ${paper.abstract}
-        ---`
-          )
-          .join("")}
-
-        INSTRUCCIONES:
-        - Analiza título, keywords, autores y abstract de cada paper
-        - Encuentra conexiones semánticas con la consulta del usuario
-        - Selecciona ÚNICAMENTE los 5 papers MÁS relevantes
-        - Explica brevemente por qué cada paper es relevante
-        
-        Responde ÚNICAMENTE en JSON:
-        {
-          "selectedPapers": [
-            {
-              "title": "título exacto del paper",
-              "relevanceReason": "por qué es relevante para la consulta"
-            }
-          ],
-          "searchSummary": "explicación de la selección realizada"
-        }
-      `;
-
-      console.log("🎯 Paso 1: Seleccionando papers más relevantes...");
-      const selection = await this.simpleQuery(selectionPrompt);
-
-      // Encontrar los papers seleccionados y sus URLs
-      const selectedPapers = selection.selectedPapers
-        .map((selected: any) => {
-          return papers.find((paper: any) => paper.title === selected.title);
-        })
-        .filter(Boolean);
-
-      const selectedUrls = selectedPapers
-        .map((paper: any) => paper.link)
-        .slice(0, 20); // Máximo 20 URLs
-      console.log(
-        `🔗 Paso 2: Analizando contenido de ${selectedUrls.length} papers seleccionados...`
+      // Extraer URLs solo de los papers FILTRADOS (máximo 5 vs 600+)
+      const filteredUrls = filteredPapers.map(
+        (filtered) => filtered.paper.link
       );
 
-      // Ahora hacer el análisis profundo con las URLs seleccionadas
-      const analysisPrompt = `
-        PASO 2-4: ANÁLISIS PROFUNDO Y SÍNTESIS
-        
-        CONSULTA DEL USUARIO: "${userQuery}"
-        
-        PAPERS SELECCIONADOS PARA ANÁLISIS PROFUNDO:
-        ${selectedPapers
-          .map(
-            (paper: any, index: number) => `
-        ${index + 1}. Título: ${paper.title}
-        Año: ${paper.year}
-        Keywords: ${paper.keywords.join(", ")}
-        Autores: ${paper.authors.join(", ")}
-        Abstract: ${paper.abstract}
-        URL: ${paper.link}
-        ---`
-          )
-          .join("")}
+      console.log(
+        `🌐 URLs a analizar: ${filteredUrls.length} (vs ${papers.length} originales)`
+      );
 
-        INSTRUCCIONES:
-        - Accede al contenido completo de las URLs proporcionadas
-        - Extrae metodología, resultados y limitaciones de cada paper
-        - Sintetiza toda la información en una respuesta completa
-        
-        Responde ÚNICAMENTE en JSON:
-        {
-          "searchSummary": "${selection.searchSummary}",
-          "relevantPapers": [
-            {
-              "title": "título exacto del paper",
-              "url": "URL completa del paper",
-              "year": año,
-              "authors": ["autor1", "autor2"],
-              "relevanceScore": 9.2,
-              "relevanceReason": "por qué este paper es relevante",
-              "keyFindings": ["hallazgo específico 1", "hallazgo específico 2"],
-              "methodology": "metodología detallada del estudio",
-              "results": "resultados principales y datos cuantitativos",
-              "limitations": "limitaciones del estudio"
-            }
-          ],
-          "synthesizedAnswer": "respuesta completa basada en todos los papers analizados",
-          "keyInsights": ["insight científico 1", "insight científico 2"],
-          "recommendations": ["recomendación práctica 1", "recomendación 2"],
-          "confidence": 8.5,
-          "totalPapersAnalyzed": ${selectedPapers.length},
-          "sources": ${JSON.stringify(selectedUrls)}
-        }
-      `;
+      // VALIDACIÓN: Asegurar límite de URLs para Free Tier
+      if (filteredUrls.length > 5) {
+        console.warn(
+          `⚠️ Limitando URLs de ${filteredUrls.length} a 5 para Free Tier`
+        );
+        filteredUrls.splice(5); // Mantener solo los primeros 5
+      }
 
-      return await this.queryWithURLContext(selectedUrls, analysisPrompt);
+      return await this.queryWithURLContext(filteredUrls, comprehensivePrompt);
     } catch (error) {
       console.error("❌ Error in completeResearch:", error);
       throw error;
@@ -302,6 +225,14 @@ export class SimpleGeminiHTTPClient implements SimpleGeminiClient {
    */
   async queryWithURLContext(urls: string[], prompt: string): Promise<any> {
     try {
+      // VALIDACIÓN: Límite estricto para Free Tier
+      if (urls.length > 5) {
+        console.warn(
+          `⚠️ URLs exceden límite: ${urls.length} > 5. Recortando...`
+        );
+        urls = urls.slice(0, 5);
+      }
+
       console.log(`🌐 Analizando ${urls.length} URLs con contexto...`);
 
       const response = await fetch(

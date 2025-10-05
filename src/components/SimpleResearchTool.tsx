@@ -166,7 +166,6 @@ const SimpleResearchTool: React.FC = () => {
         Responde en JSON:
         {
           "keyFindings": ["hallazgo 1", "hallazgo 2", "hallazgo 3"],
-          "relevanceScore": 8.5,
           "summary": "resumen de cómo este paper responde a la consulta del usuario"
         }
       `;
